@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  refreshTokens RefreshToken[]
+  favorites     FavoriteRepository[]
+  searchHistory SearchHistory[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model FavoriteRepository {
+  id          String   @id @default(uuid())
+  userId      String
+  githubId    Int
+  owner       String
+  name        String
+  fullName    String
+  description String?
+  language    String?
+  stars       Int      @default(0)
+  forks       Int      @default(0)
+  openIssues  Int      @default(0)
+  url         String
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, githubId])
+  @@index([userId])
+  @@map("favorite_repositories")
+}
+
+model SearchHistory {
+  id        String            @id @default(uuid())
+  userId    String
+  query     String
+  type      SearchHistoryType
+  createdAt DateTime          @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("search_history")
+}
+
+enum SearchHistoryType {
+  USER
+  REPOSITORY
+}
