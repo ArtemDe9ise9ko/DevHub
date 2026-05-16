@@ -24,6 +24,7 @@ describe("AuthService", () => {
   const prismaService = {
     refreshToken: {
       create: jest.fn(),
+      findFirst: jest.fn(),
       findMany: jest.fn(),
       delete: jest.fn(),
     },
@@ -132,14 +133,15 @@ describe("AuthService", () => {
       sub: "user-id",
       email: "user@example.com",
       type: "refresh",
+      jti: "old-refresh-jti",
     });
-    prismaService.refreshToken.findMany.mockResolvedValue([
-      {
-        id: "token-id",
-        tokenHash: "hashed-refresh-token",
-        expiresAt: new Date(Date.now() + 10000),
-      },
-    ]);
+    prismaService.refreshToken.findFirst.mockResolvedValue({
+      id: "token-id",
+      userId: "user-id",
+      jti: "old-refresh-jti",
+      tokenHash: "hashed-refresh-token",
+      expiresAt: new Date(Date.now() + 10000),
+    });
     bcryptCompareMock.mockResolvedValue(true);
     jwtService.signAsync
       .mockResolvedValueOnce("new-access-token")
@@ -153,6 +155,13 @@ describe("AuthService", () => {
 
     expect(response.accessToken).toBe("new-access-token");
     expect(response.refreshToken).toBe("new-refresh-token");
+    expect(prismaService.refreshToken.findFirst).toHaveBeenCalledWith({
+      where: {
+        userId: "user-id",
+        jti: "old-refresh-jti",
+        expiresAt: { gt: expect.any(Date) },
+      },
+    });
     expect(prismaService.refreshToken.delete).toHaveBeenCalledWith({
       where: { id: "token-id" },
     });
@@ -160,7 +169,7 @@ describe("AuthService", () => {
   });
 
   it("returns success true on logout even when no refresh token exists", async () => {
-    prismaService.refreshToken.findMany.mockResolvedValue([]);
+    jwtService.verifyAsync.mockRejectedValue(new Error("Invalid token"));
     prismaService.refreshToken.delete.mockResolvedValue({});
 
     const response = await service.logout("user-id", {

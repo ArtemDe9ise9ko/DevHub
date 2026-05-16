@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -30,6 +38,7 @@ export class AuthController {
   }
 
   @Post("login")
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Log in with email and password" })
   @ApiResponse({ status: 200, type: AuthResponseDto })
   async login(@Body() dto: LoginDto): Promise<AuthResponseDto> {
@@ -37,6 +46,7 @@ export class AuthController {
   }
 
   @Post("refresh")
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Refresh access and refresh tokens" })
   @ApiResponse({ status: 200, type: TokenResponseDto })
   async refresh(@Body() dto: RefreshTokenDto): Promise<TokenResponseDto> {
@@ -44,6 +54,7 @@ export class AuthController {
   }
 
   @Post("logout")
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth("access-token")
   @ApiOperation({ summary: "Log out and invalidate refresh token" })

@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService, JwtSignOptions } from "@nestjs/jwt";
+import { randomUUID } from "crypto";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { UsersService } from "../users/users.service";
@@ -62,23 +63,33 @@ export class AuthService {
     const payload = await this.verifyRefreshToken(dto.refreshToken);
     const user = await this.usersService.findById(payload.sub);
 
-    if (!user) {
+    if (!user || !payload.jti) {
       throw new UnauthorizedException("Invalid refresh token");
     }
 
-    const oldToken = await this.findStoredRefreshToken(
-      payload.sub,
-      dto.refreshToken,
-    );
+    const oldToken = await this.prisma.refreshToken.findFirst({
+      where: {
+        userId: payload.sub,
+        jti: payload.jti,
+        expiresAt: { gt: new Date() },
+      },
+    });
 
-    if (!oldToken) {
+    if (
+      !oldToken ||
+      !(await bcrypt.compare(dto.refreshToken, oldToken.tokenHash))
+    ) {
       throw new UnauthorizedException("Invalid refresh token");
     }
 
     await this.prisma.refreshToken.delete({ where: { id: oldToken.id } });
 
     const tokens = await this.generateTokens(user);
-    await this.storeRefreshToken(user.id, tokens.refreshToken);
+    await this.storeRefreshToken(
+      user.id,
+      tokens.refreshToken,
+      tokens.refreshTokenJti,
+    );
     return tokens;
   }
 
@@ -86,8 +97,27 @@ export class AuthService {
     userId: string,
     dto: RefreshTokenDto,
   ): Promise<LogoutResponseDto> {
-    const token = await this.findStoredRefreshToken(userId, dto.refreshToken);
-    if (token) {
+    let payload: RefreshTokenPayload;
+
+    try {
+      payload = await this.verifyRefreshToken(dto.refreshToken);
+    } catch {
+      return { success: true };
+    }
+
+    if (payload.sub !== userId || !payload.jti) {
+      return { success: true };
+    }
+
+    const token = await this.prisma.refreshToken.findFirst({
+      where: {
+        userId,
+        jti: payload.jti,
+        expiresAt: { gt: new Date() },
+      },
+    });
+
+    if (token && (await bcrypt.compare(dto.refreshToken, token.tokenHash))) {
       await this.prisma.refreshToken.delete({ where: { id: token.id } });
     }
 
@@ -111,7 +141,11 @@ export class AuthService {
 
   private async buildAuthResponse(user: User): Promise<AuthResponseDto> {
     const tokens = await this.generateTokens(user);
-    await this.storeRefreshToken(user.id, tokens.refreshToken);
+    await this.storeRefreshToken(
+      user.id,
+      tokens.refreshToken,
+      tokens.refreshTokenJti,
+    );
 
     return {
       user: {
@@ -124,17 +158,24 @@ export class AuthService {
     };
   }
 
-  private async generateTokens(user: User): Promise<TokenResponseDto> {
+  private async generateTokens(
+    user: User,
+  ): Promise<TokenResponseDto & { refreshTokenJti: string }> {
+    const accessJti = randomUUID();
+    const refreshJti = randomUUID();
+
     const accessPayload: JwtPayload = {
       sub: user.id,
       email: user.email,
       type: "access",
+      jti: accessJti,
     };
 
     const refreshPayload: JwtPayload = {
       sub: user.id,
       email: user.email,
       type: "refresh",
+      jti: refreshJti,
     };
 
     const accessOptions: JwtSignOptions = {
@@ -163,16 +204,22 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+      refreshTokenJti: refreshJti,
     };
   }
 
-  private async storeRefreshToken(userId: string, refreshToken: string) {
+  private async storeRefreshToken(
+    userId: string,
+    refreshToken: string,
+    jti: string,
+  ) {
     const tokenHash = await bcrypt.hash(refreshToken, this.getSaltRounds());
 
     await this.prisma.refreshToken.create({
       data: {
         userId,
         tokenHash,
+        jti,
         expiresAt: this.getRefreshTokenExpiry(),
       },
     });
