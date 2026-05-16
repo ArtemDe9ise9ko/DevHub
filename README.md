@@ -33,3 +33,13 @@ A portfolio pet project for analyzing GitHub data.
 - Protected endpoints require: `Authorization: Bearer <accessToken>`
 - Refresh tokens are rotated and stored hashed in database.
 - Password hashes and refresh token hashes are never returned by API.
+
+## GitHub API
+
+- Swagger URL: http://localhost:3000/api
+- Optional env variable: `GITHUB_TOKEN`
+- Endpoints:
+  - `GET /github/users/:username`
+  - `GET /github/users/:username/repositories`
+  - `GET /github/repositories/:owner/:repo`
+  - `GET /github/repositories/:owner/:repo/languages`
