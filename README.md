@@ -42,6 +42,14 @@ A portfolio pet project for analyzing GitHub data.
   - `GET /favorites/repositories`
   - `DELETE /favorites/repositories/:id`
 
+## Search History API
+
+- Protected endpoints require: `Authorization: Bearer <accessToken>`
+- Endpoints:
+  - `POST /search-history`
+  - `GET /search-history`
+  - `DELETE /search-history`
+
 ## GitHub API
 
 - Swagger URL: http://localhost:3000/api
