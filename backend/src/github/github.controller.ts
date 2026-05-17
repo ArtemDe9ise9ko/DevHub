@@ -8,10 +8,10 @@ import {
 } from "@nestjs/swagger";
 import { GitHubService } from "./github.service";
 import { GitHubUserResponseDto } from "./dto/github-user-response.dto";
+import { GitHubSearchQueryDto } from "./dto/github-search-query.dto";
 import { GitHubRepositoryResponseDto } from "./dto/github-repository-response.dto";
 import { GitHubRepositoryDetailsResponseDto } from "./dto/github-repository-details-response.dto";
 import { GitHubLanguageResponseDto } from "./dto/github-language-response.dto";
-import { GitHubSearchQueryDto } from "./dto/github-search-query.dto";
 
 @ApiTags("github")
 @Controller("github")

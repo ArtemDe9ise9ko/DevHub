@@ -10,12 +10,12 @@ import {
 import { isAxiosError } from "axios";
 import { firstValueFrom } from "rxjs";
 import { GitHubUserResponseDto } from "./dto/github-user-response.dto";
-import { GitHubRepositoryResponseDto } from "./dto/github-repository-response.dto";
-import { GitHubRepositoryDetailsResponseDto } from "./dto/github-repository-details-response.dto";
-import { GitHubLanguageResponseDto } from "./dto/github-language-response.dto";
 import { GitHubSearchQueryDto } from "./dto/github-search-query.dto";
 import { GitHubApiUser } from "./types/github-api-user.type";
+import { GitHubRepositoryResponseDto } from "./dto/github-repository-response.dto";
 import { GitHubApiRepository } from "./types/github-api-repository.type";
+import { GitHubRepositoryDetailsResponseDto } from "./dto/github-repository-details-response.dto";
+import { GitHubLanguageResponseDto } from "./dto/github-language-response.dto";
 
 @Injectable()
 export class GitHubService {
