@@ -34,6 +34,14 @@ A portfolio pet project for analyzing GitHub data.
 - Refresh tokens are rotated and stored hashed in database.
 - Password hashes and refresh token hashes are never returned by API.
 
+## Favorites API
+
+- Protected endpoints require: `Authorization: Bearer <accessToken>`
+- Endpoints:
+  - `POST /favorites/repositories`
+  - `GET /favorites/repositories`
+  - `DELETE /favorites/repositories/:id`
+
 ## GitHub API
 
 - Swagger URL: http://localhost:3000/api
