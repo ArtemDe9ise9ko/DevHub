@@ -50,9 +50,15 @@ A portfolio pet project for analyzing GitHub data.
   - `GET /search-history`
   - `DELETE /search-history`
 
+## Analytics API
+
+- Public read-only endpoints based on public GitHub repositories
+- Endpoints:
+  - `GET /analytics/users/:username/summary`
+  - `GET /analytics/users/:username/languages`
+
 ## GitHub API
 
-- Swagger URL: http://localhost:3000/api
 - Optional env variable: `GITHUB_TOKEN`
 - Endpoints:
   - `GET /github/users/:username`

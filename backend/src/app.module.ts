@@ -7,6 +7,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { GitHubModule } from "./github/github.module";
 import { FavoritesModule } from "./favorites/favorites.module";
 import { SearchHistoryModule } from "./search-history/search-history.module";
+import { AnalyticsModule } from "./analytics/analytics.module";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SearchHistoryModule } from "./search-history/search-history.module";
     GitHubModule,
     FavoritesModule,
     SearchHistoryModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
