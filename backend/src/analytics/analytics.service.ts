@@ -1,13 +1,43 @@
 import { Injectable } from "@nestjs/common";
 import { GitHubService } from "../github/github.service";
+import { GitHubRepositoryResponseDto } from "../github/dto/github-repository-response.dto";
+import {
+  GitHubRepositorySort,
+  GitHubRepositoryDirection,
+} from "../github/dto/github-search-query.dto";
 import { RepositoryRankItemDto } from "./dto/repository-rank-item.dto";
 import { LanguageDistributionItemDto } from "./dto/language-distribution-item.dto";
 import { UserAnalyticsSummaryResponseDto } from "./dto/user-analytics-summary-response.dto";
-import { GitHubRepositoryResponseDto } from "../github/dto/github-repository-response.dto";
 
 @Injectable()
 export class AnalyticsService {
   constructor(private readonly githubService: GitHubService) {}
+
+  private async loadAllUserRepositories(
+    username: string,
+  ): Promise<GitHubRepositoryResponseDto[]> {
+    const repositories: GitHubRepositoryResponseDto[] = [];
+    let page = 1;
+
+    while (true) {
+      const pageItems = await this.githubService.getUserRepositories(username, {
+        page,
+        perPage: 100,
+        sort: GitHubRepositorySort.updated,
+        direction: GitHubRepositoryDirection.desc,
+      });
+
+      repositories.push(...pageItems);
+
+      if (pageItems.length < 100) {
+        break;
+      }
+
+      page += 1;
+    }
+
+    return repositories;
+  }
 
   private mapToRepositoryRankItem(
     repo: GitHubRepositoryResponseDto,
@@ -27,61 +57,55 @@ export class AnalyticsService {
     return Number(value.toFixed(2));
   }
 
-  private calculateLanguageDistribution(repos: GitHubRepositoryResponseDto[]) {
+  private calculateLanguageDistribution(
+    repos: GitHubRepositoryResponseDto[],
+  ): LanguageDistributionItemDto[] {
     const counts: Record<string, number> = {};
     const total = repos.length;
 
-    repos.forEach((r) => {
-      const lang = r.language && r.language.trim() ? r.language : "Unknown";
-      counts[lang] = (counts[lang] || 0) + 1;
+    repos.forEach((repo) => {
+      const language =
+        repo.language && repo.language.trim() ? repo.language : "Unknown";
+      counts[language] = (counts[language] || 0) + 1;
     });
 
-    const items: LanguageDistributionItemDto[] = Object.entries(counts)
+    return Object.entries(counts)
       .map(([language, repositoryCount]) => ({
         language,
         repositoryCount,
         percentage: this.roundPercentage((repositoryCount / total) * 100),
       }))
       .sort((a, b) => b.repositoryCount - a.repositoryCount);
-
-    return items;
   }
 
   private getTopRepositoriesBy(
     repos: GitHubRepositoryResponseDto[],
     key: "stars" | "forks",
     limit = 5,
-  ) {
+  ): RepositoryRankItemDto[] {
     return repos
       .slice()
       .sort((a, b) => b[key] - a[key])
       .slice(0, limit)
-      .map((r) => this.mapToRepositoryRankItem(r));
+      .map((repo) => this.mapToRepositoryRankItem(repo));
   }
 
   async getUserSummary(
     username: string,
   ): Promise<UserAnalyticsSummaryResponseDto> {
-    const repos = await this.githubService.getUserRepositories(username, {
-      page: 1,
-      perPage: 100,
-      sort: "updated",
-      direction: "desc",
-    } as any);
+    const repos = await this.loadAllUserRepositories(username);
 
     const totalRepositories = repos.length;
-    const totalStars = repos.reduce((s, r) => s + (r.stars || 0), 0);
-    const totalForks = repos.reduce((s, r) => s + (r.forks || 0), 0);
-    const totalOpenIssues = repos.reduce((s, r) => s + (r.openIssues || 0), 0);
+    const totalStars = repos.reduce((sum, repo) => sum + repo.stars, 0);
+    const totalForks = repos.reduce((sum, repo) => sum + repo.forks, 0);
+    const totalOpenIssues = repos.reduce(
+      (sum, repo) => sum + repo.openIssues,
+      0,
+    );
     const averageStarsPerRepository =
       totalRepositories > 0
         ? Number((totalStars / totalRepositories).toFixed(2))
         : 0;
-
-    const topRepositoriesByStars = this.getTopRepositoriesBy(repos, "stars");
-    const topRepositoriesByForks = this.getTopRepositoriesBy(repos, "forks");
-    const languages =
-      totalRepositories > 0 ? this.calculateLanguageDistribution(repos) : [];
 
     return {
       username,
@@ -90,24 +114,18 @@ export class AnalyticsService {
       totalForks,
       totalOpenIssues,
       averageStarsPerRepository,
-      topRepositoriesByStars,
-      topRepositoriesByForks,
-      languages,
+      topRepositoriesByStars: this.getTopRepositoriesBy(repos, "stars"),
+      topRepositoriesByForks: this.getTopRepositoriesBy(repos, "forks"),
+      languages:
+        totalRepositories > 0 ? this.calculateLanguageDistribution(repos) : [],
     };
   }
 
   async getUserLanguages(
     username: string,
   ): Promise<LanguageDistributionItemDto[]> {
-    const repos = await this.githubService.getUserRepositories(username, {
-      page: 1,
-      perPage: 100,
-      sort: "updated",
-      direction: "desc",
-    } as any);
+    const repos = await this.loadAllUserRepositories(username);
 
-    if (repos.length === 0) return [];
-
-    return this.calculateLanguageDistribution(repos);
+    return repos.length > 0 ? this.calculateLanguageDistribution(repos) : [];
   }
 }

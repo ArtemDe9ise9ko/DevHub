@@ -1,3 +1,7 @@
+import {
+  GitHubRepositorySort,
+  GitHubRepositoryDirection,
+} from "../github/dto/github-search-query.dto";
 import { AnalyticsService } from "./analytics.service";
 
 describe("AnalyticsService", () => {
@@ -77,6 +81,48 @@ describe("AnalyticsService", () => {
 
     expect(summary.topRepositoriesByStars[0].fullName).toBe("u/a");
     expect(summary.topRepositoriesByForks[0].fullName).toBe("u/c");
+  });
+
+  it("loads multiple pages of repositories", async () => {
+    const firstPage = Array.from({ length: 100 }, (_, index) => ({
+      name: `repo-${index + 1}`,
+      fullName: `u/repo-${index + 1}`,
+      stars: index + 1,
+      forks: index,
+      openIssues: 0,
+      language: "TypeScript",
+      repositoryUrl: "url",
+    }));
+    const secondPage = [
+      {
+        name: "repo-101",
+        fullName: "u/repo-101",
+        stars: 101,
+        forks: 10,
+        openIssues: 0,
+        language: "JavaScript",
+        repositoryUrl: "url",
+      },
+    ];
+
+    githubService.getUserRepositories.mockImplementation(
+      async (_username, query) => {
+        if (query.page === 1) return firstPage;
+        return secondPage;
+      },
+    );
+
+    const summary = await service.getUserSummary("u");
+
+    expect(summary.totalRepositories).toBe(101);
+    expect(summary.topRepositoriesByStars[0].fullName).toBe("u/repo-101");
+    expect(githubService.getUserRepositories).toHaveBeenCalledTimes(2);
+    expect(githubService.getUserRepositories).toHaveBeenCalledWith("u", {
+      page: 1,
+      perPage: 100,
+      sort: GitHubRepositorySort.updated,
+      direction: GitHubRepositoryDirection.desc,
+    });
   });
 
   it("calculates language distribution and percentages", async () => {
