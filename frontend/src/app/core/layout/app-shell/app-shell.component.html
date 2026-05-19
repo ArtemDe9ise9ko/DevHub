@@ -1,0 +1,47 @@
+<div class="app-shell">
+  <header class="app-shell__header">
+    <div class="app-shell__container">
+      <div class="app-shell__logo">
+        <h1 class="app-shell__title">DevHub</h1>
+      </div>
+      <nav class="app-shell__nav">
+        <ul class="app-shell__nav-list">
+          <li class="app-shell__nav-item">
+            <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+          </li>
+          <li class="app-shell__nav-item">
+            <a routerLink="/github-search" routerLinkActive="active"
+              >GitHub Search</a
+            >
+          </li>
+          <li class="app-shell__nav-item">
+            <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
+          </li>
+          <li class="app-shell__nav-item">
+            <a routerLink="/favorites" routerLinkActive="active">Favorites</a>
+          </li>
+          <li class="app-shell__nav-item">
+            <a routerLink="/search-history" routerLinkActive="active"
+              >Search History</a
+            >
+          </li>
+          <li class="app-shell__nav-item">
+            <a routerLink="/login" routerLinkActive="active">Login</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-shell__main">
+    <div class="app-shell__container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <footer class="app-shell__footer">
+    <div class="app-shell__container">
+      <p>&copy; 2026 DevHub. GitHub Analytics Dashboard.</p>
+    </div>
+  </footer>
+</div>

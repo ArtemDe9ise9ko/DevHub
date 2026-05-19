@@ -1,1 +1,12 @@
-/* Add application styles & imports to this file! */
+/* Global application styles */
+:host {
+  display: block;
+}
+
+/* Ensure full height layout */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}

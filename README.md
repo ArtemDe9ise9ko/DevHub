@@ -123,6 +123,52 @@ npm run test:e2e
 npm run test:cov
 ```
 
+## Frontend Setup
+
+The frontend is an Angular 17 standalone application with a clean, scalable folder structure:
+
+```bash
+# Install frontend dependencies
+cd frontend
+npm install
+
+# Run frontend development server
+npm run start
+
+# Build for production
+npm run build
+```
+
+Frontend will be available at `http://localhost:4200` (default ng serve port).
+
+### Frontend Architecture
+
+- **Core**: Shared config, services, layout, and models
+- **Shared**: Reusable components (page-header, loading-state, empty-state) and models
+- **Features**: Feature modules with pages (auth, dashboard, github-search, repository-details, favorites, search-history, analytics)
+
+### Frontend Pages
+
+- `/` → redirects to `/dashboard`
+- `/dashboard` — Main dashboard
+- `/github-search` — Search GitHub repositories
+- `/repositories/:owner/:repo` — Repository details
+- `/favorites` — Saved favorite repositories
+- `/search-history` — User search history
+- `/analytics` — GitHub analytics
+- `/login` — User login (placeholder)
+- `/register` — User registration (placeholder)
+
+### Frontend Configuration
+
+API base URL is configured in `src/app/core/config/api.config.ts`:
+
+```typescript
+export const API_CONFIG = {
+  baseUrl: "http://localhost:3000",
+};
+```
+
 ## Swagger
 
 API documentation is available at:

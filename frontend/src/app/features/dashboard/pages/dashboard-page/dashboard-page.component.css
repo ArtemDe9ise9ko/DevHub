@@ -1,0 +1,10 @@
+.dashboard-page {
+  padding: 1rem;
+}
+
+.dashboard-content {
+  background: #f5f5f5;
+  padding: 2rem;
+  border-radius: 4px;
+  color: #666;
+}
