@@ -39,7 +39,7 @@
       </div>
 
       <button type="submit" [disabled]="registerForm.invalid || isSubmitting()">
-        Create account
+        {{ isSubmitting() ? "Creating account..." : "Create account" }}
       </button>
 
       <p class="form-error" *ngIf="errorMessage()">{{ errorMessage() }}</p>

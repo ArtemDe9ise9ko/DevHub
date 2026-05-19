@@ -5,6 +5,56 @@
   ></app-page-header>
 
   <section class="dashboard-content">
-    <p>Dashboard features will be implemented in the next iteration.</p>
+    <header class="dashboard-welcome">
+      <h2 class="dashboard-welcome__title">Welcome</h2>
+      <p class="dashboard-welcome__desc">
+        DevHub helps you explore GitHub profiles, repositories and track
+        favourites and searches across time.
+      </p>
+      <p class="dashboard-welcome__user" *ngIf="userEmail()">
+        Signed in as: <strong>{{ userEmail() }}</strong>
+      </p>
+    </header>
+
+    <nav class="dashboard-actions" aria-label="Quick actions">
+      <a class="card action-card" routerLink="/github-search">
+        <h3>Search GitHub</h3>
+        <p>Quickly search profiles and repositories.</p>
+      </a>
+      <a class="card action-card" routerLink="/analytics">
+        <h3>View Analytics</h3>
+        <p>Open your analytics dashboard (placeholder).</p>
+      </a>
+      <a class="card action-card" routerLink="/favorites">
+        <h3>Favorites</h3>
+        <p>See repositories you marked as favorite.</p>
+      </a>
+      <a class="card action-card" routerLink="/search-history">
+        <h3>Search History</h3>
+        <p>Review your recent searches.</p>
+      </a>
+    </nav>
+
+    <section class="dashboard-summaries">
+      <article class="card summary-card">
+        <h4>GitHub Profiles</h4>
+        <p class="muted">Summary placeholder</p>
+      </article>
+
+      <article class="card summary-card">
+        <h4>Repositories</h4>
+        <p class="muted">Summary placeholder</p>
+      </article>
+
+      <article class="card summary-card">
+        <h4>Favorite Repositories</h4>
+        <p class="muted">Summary placeholder</p>
+      </article>
+
+      <article class="card summary-card">
+        <h4>Recent Searches</h4>
+        <p class="muted">Summary placeholder</p>
+      </article>
+    </section>
   </section>
 </div>

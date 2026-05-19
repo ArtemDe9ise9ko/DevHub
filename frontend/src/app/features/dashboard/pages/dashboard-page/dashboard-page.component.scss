@@ -11,3 +11,52 @@
   color: vars.$color-text-muted;
   background: vars.$color-surface;
 }
+
+.dashboard-welcome {
+  margin-bottom: vars.$spacing-lg;
+
+  &__title {
+    margin: 0 0 vars.$spacing-xs 0;
+    font-size: 1.125rem;
+  }
+
+  &__desc {
+    margin: 0 0 vars.$spacing-sm 0;
+    color: vars.$color-text-muted;
+  }
+
+  &__user {
+    margin: 0;
+    color: vars.$color-text;
+  }
+}
+
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: vars.$spacing-md;
+  margin-bottom: vars.$spacing-lg;
+}
+
+.action-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: vars.$spacing-md;
+}
+
+.summary-card {
+  padding: vars.$spacing-md;
+  color: vars.$color-text;
+}
+
+.dashboard-summaries {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: vars.$spacing-md;
+}
+
+.muted {
+  color: vars.$color-text-muted;
+  margin: 0;
+}
