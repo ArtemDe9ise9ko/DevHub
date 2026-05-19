@@ -11,7 +11,7 @@ import { CommonModule } from "@angular/common";
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./loading-state.component.html",
-  styleUrls: ["./loading-state.component.css"],
+  styleUrls: ["./loading-state.component.scss"],
 })
 export class LoadingStateComponent {
   @Input() message: string = "Loading...";

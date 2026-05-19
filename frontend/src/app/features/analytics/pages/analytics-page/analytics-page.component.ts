@@ -12,6 +12,6 @@ import { PageHeaderComponent } from "@shared/components/page-header/page-header.
   standalone: true,
   imports: [CommonModule, PageHeaderComponent],
   templateUrl: "./analytics-page.component.html",
-  styleUrls: ["./analytics-page.component.css"],
+  styleUrls: ["./analytics-page.component.scss"],
 })
 export class AnalyticsPageComponent {}

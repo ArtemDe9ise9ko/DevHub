@@ -12,6 +12,6 @@ import { PageHeaderComponent } from "@shared/components/page-header/page-header.
   standalone: true,
   imports: [CommonModule, PageHeaderComponent],
   templateUrl: "./dashboard-page.component.html",
-  styleUrls: ["./dashboard-page.component.css"],
+  styleUrls: ["./dashboard-page.component.scss"],
 })
 export class DashboardPageComponent {}

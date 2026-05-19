@@ -12,6 +12,6 @@ import { PageHeaderComponent } from "@shared/components/page-header/page-header.
   standalone: true,
   imports: [CommonModule, PageHeaderComponent],
   templateUrl: "./favorites-page.component.html",
-  styleUrls: ["./favorites-page.component.css"],
+  styleUrls: ["./favorites-page.component.scss"],
 })
 export class FavoritesPageComponent {}

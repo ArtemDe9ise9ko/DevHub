@@ -12,6 +12,6 @@ import { PageHeaderComponent } from "@shared/components/page-header/page-header.
   standalone: true,
   imports: [CommonModule, PageHeaderComponent],
   templateUrl: "./register-page.component.html",
-  styleUrls: ["./register-page.component.css"],
+  styleUrls: ["./register-page.component.scss"],
 })
 export class RegisterPageComponent {}

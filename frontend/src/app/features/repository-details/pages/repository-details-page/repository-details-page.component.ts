@@ -12,6 +12,6 @@ import { PageHeaderComponent } from "@shared/components/page-header/page-header.
   standalone: true,
   imports: [CommonModule, PageHeaderComponent],
   templateUrl: "./repository-details-page.component.html",
-  styleUrls: ["./repository-details-page.component.css"],
+  styleUrls: ["./repository-details-page.component.scss"],
 })
 export class RepositoryDetailsPageComponent {}

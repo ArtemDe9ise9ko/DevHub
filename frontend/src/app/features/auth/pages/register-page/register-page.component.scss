@@ -1,0 +1,12 @@
+@use "variables" as vars;
+@use "mixins" as mixins;
+
+.register-page {
+  padding: vars.$spacing-lg;
+}
+
+.register-content {
+  @include mixins.card;
+  padding: vars.$spacing-lg;
+  color: vars.$color-text-muted;
+}

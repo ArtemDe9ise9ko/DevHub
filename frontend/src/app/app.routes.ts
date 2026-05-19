@@ -56,6 +56,10 @@ export const routes: Routes = [
         path: "register",
         component: RegisterPageComponent,
       },
+      {
+        path: "**",
+        redirectTo: "dashboard",
+      },
     ],
   },
 ];

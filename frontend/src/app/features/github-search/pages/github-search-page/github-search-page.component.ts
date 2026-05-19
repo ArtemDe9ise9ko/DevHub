@@ -12,6 +12,6 @@ import { PageHeaderComponent } from "@shared/components/page-header/page-header.
   standalone: true,
   imports: [CommonModule, PageHeaderComponent],
   templateUrl: "./github-search-page.component.html",
-  styleUrls: ["./github-search-page.component.css"],
+  styleUrls: ["./github-search-page.component.scss"],
 })
 export class GitHubSearchPageComponent {}

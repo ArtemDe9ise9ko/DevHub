@@ -12,6 +12,6 @@ import { PageHeaderComponent } from "@shared/components/page-header/page-header.
   standalone: true,
   imports: [CommonModule, PageHeaderComponent],
   templateUrl: "./search-history-page.component.html",
-  styleUrls: ["./search-history-page.component.css"],
+  styleUrls: ["./search-history-page.component.scss"],
 })
 export class SearchHistoryPageComponent {}

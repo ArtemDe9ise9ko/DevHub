@@ -11,7 +11,7 @@ import { CommonModule } from "@angular/common";
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./empty-state.component.html",
-  styleUrls: ["./empty-state.component.css"],
+  styleUrls: ["./empty-state.component.scss"],
 })
 export class EmptyStateComponent {
   @Input() title: string = "No data";
