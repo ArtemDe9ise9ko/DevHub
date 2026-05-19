@@ -1,10 +1,157 @@
 <div class="repository-details-page">
+  <a routerLink="/github-search" class="back-link">← Back to Search</a>
+
   <app-page-header
     title="Repository Details"
     description="Details for a specific repository."
   ></app-page-header>
 
   <section class="details-content">
-    <p>Repository details view will be implemented in the next iteration.</p>
+    <app-empty-state
+      *ngIf="!languages() || languages()!.items.length === 0"
+      title="No language data"
+      message="GitHub did not return language statistics for this repository."
+    ></app-empty-state>
+
+    <ng-container *ngIf="!loading()">
+      <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+      <div *ngIf="repository()" class="repo-container">
+        <!-- Repository Header -->
+        <header class="repo-header card">
+          <img
+            [src]="repository()!.ownerAvatarUrl"
+            [alt]="repository()!.ownerUsername"
+            class="repo-avatar"
+          />
+          <div class="repo-header__body">
+            <h2 class="repo-name">{{ repository()!.fullName }}</h2>
+            <p class="repo-description" *ngIf="repository()!.description">
+              {{ repository()!.description }}
+            </p>
+            <div class="repo-badges">
+              <span class="badge" [class.private]="repository()!.private">
+                {{ repository()!.private ? "Private" : "Public" }}
+              </span>
+              <span class="badge" *ngIf="repository()!.fork">Fork</span>
+              <span class="badge" *ngIf="repository()!.language">{{
+                repository()!.language
+              }}</span>
+            </div>
+            <a
+              [href]="repository()!.repositoryUrl"
+              target="_blank"
+              rel="noopener"
+              class="github-link"
+            >
+              View on GitHub →
+            </a>
+          </div>
+        </header>
+
+        <!-- Stats Section -->
+        <section class="stats-section card">
+          <h3>Stats</h3>
+          <ul class="stats-grid">
+            <li class="stat">
+              <span class="stat-value">⭐ {{ repository()!.stars }}</span>
+              <span class="stat-label">Stars</span>
+            </li>
+            <li class="stat">
+              <span class="stat-value">🍴 {{ repository()!.forks }}</span>
+              <span class="stat-label">Forks</span>
+            </li>
+            <li class="stat">
+              <span class="stat-value">👁 {{ repository()!.watchers }}</span>
+              <span class="stat-label">Watchers</span>
+            </li>
+            <li class="stat">
+              <span class="stat-value">⚠ {{ repository()!.openIssues }}</span>
+              <span class="stat-label">Open Issues</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Metadata Section -->
+        <section class="metadata-section card">
+          <h3>Metadata</h3>
+          <dl class="metadata-list">
+            <dt>Default Branch</dt>
+            <dd>{{ repository()!.defaultBranch }}</dd>
+
+            <dt>License</dt>
+            <dd>{{ repository()!.licenseName || "N/A" }}</dd>
+
+            <dt>Created At</dt>
+            <dd>{{ repository()!.createdAt | date: "medium" }}</dd>
+
+            <dt>Updated At</dt>
+            <dd>{{ repository()!.updatedAt | date: "medium" }}</dd>
+
+            <dt>Pushed At</dt>
+            <dd>{{ repository()!.pushedAt | date: "medium" }}</dd>
+
+            <dt *ngIf="repository()!.homepage">Homepage</dt>
+            <dd *ngIf="repository()!.homepage">
+              <a
+                [href]="repository()!.homepage"
+                target="_blank"
+                rel="noopener"
+                >{{ repository()!.homepage }}</a
+              >
+            </dd>
+
+            <dt>Clone URL</dt>
+            <dd class="monospace">{{ repository()!.cloneUrl }}</dd>
+
+            <dt>SSH URL</dt>
+            <dd class="monospace">{{ repository()!.sshUrl }}</dd>
+          </dl>
+        </section>
+
+        <!-- Topics Section -->
+        <section
+          class="topics-section card"
+          *ngIf="repository()!.topics && repository()!.topics.length > 0"
+        >
+          <h3>Topics</h3>
+          <ul class="topics-list">
+            <li *ngFor="let topic of repository()!.topics" class="topic-chip">
+              {{ topic }}
+            </li>
+          </ul>
+        </section>
+
+        <!-- Languages Section -->
+        <section
+          class="languages-section card"
+          *ngIf="languages() && languages()!.items.length > 0"
+        >
+          <h3>Languages</h3>
+          <ul class="languages-list">
+            <li *ngFor="let lang of languages()!.items" class="language-item">
+              <div class="language-header">
+                <span class="language-name">{{ lang.language }}</span>
+                <span class="language-percentage"
+                  >{{ lang.percentage.toFixed(1) }}%</span
+                >
+              </div>
+              <div class="language-bar">
+                <div
+                  class="language-fill"
+                  [style.width.%]="lang.percentage"
+                ></div>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <app-empty-state
+          *ngIf="!languages() || languages()!.items.length === 0"
+          title="No language data"
+          message="GitHub did not return language statistics for this repository."
+        ></app-empty-state>
+      </div>
+    </ng-container>
   </section>
 </div>
