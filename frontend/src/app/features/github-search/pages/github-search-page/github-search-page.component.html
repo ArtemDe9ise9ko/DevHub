@@ -1,10 +1,123 @@
 <div class="github-search-page">
   <app-page-header
     title="GitHub Search"
-    description="Search for GitHub repositories."
+    description="Search GitHub users and view their repositories."
   ></app-page-header>
 
   <section class="search-content">
-    <p>GitHub search feature will be implemented in the next iteration.</p>
+    <form class="search-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <input
+          type="text"
+          formControlName="username"
+          placeholder="Enter GitHub username"
+          aria-label="GitHub username"
+        />
+        <button type="submit" [disabled]="form.invalid || loading()">
+          {{ loading() ? "Searching..." : "Search" }}
+        </button>
+      </div>
+      <p class="form-error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+    </form>
+
+    <app-loading-state
+      *ngIf="loading()"
+      message="Loading GitHub profile and repositories..."
+    ></app-loading-state>
+
+    <ng-container *ngIf="!loading()">
+      <app-empty-state
+        *ngIf="!submitted() && !user()"
+        title="Start searching"
+        message="Enter a GitHub username above to view profile and repository data."
+      ></app-empty-state>
+
+      <div *ngIf="submitted() && !user() && errorMessage()" class="error-block">
+        <p class="form-error">{{ errorMessage() }}</p>
+      </div>
+
+      <div *ngIf="user()" class="results">
+        <section class="profile-card card">
+          <div class="profile-card__avatar">
+            <img [src]="user()!.avatarUrl" [alt]="user()!.username" />
+          </div>
+          <div class="profile-card__body">
+            <h3 class="profile-card__name">
+              {{ user()!.name || user()!.username }}
+            </h3>
+            <p class="profile-card__username">
+              &#64;<span>{{ user()!.username }}</span>
+            </p>
+            <p class="profile-card__bio" *ngIf="user()!.bio">
+              {{ user()!.bio }}
+            </p>
+
+            <ul class="profile-card__meta">
+              <li *ngIf="user()!.company">{{ user()!.company }}</li>
+              <li *ngIf="user()!.location">{{ user()!.location }}</li>
+              <li>
+                <strong>{{ user()!.publicRepos }}</strong> repos
+              </li>
+              <li>
+                <strong>{{ user()!.followers }}</strong> followers
+              </li>
+              <li>
+                <a [href]="user()!.profileUrl" target="_blank" rel="noopener"
+                  >View on GitHub</a
+                >
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="repo-list">
+          <h4>Repositories</h4>
+
+          <app-empty-state
+            *ngIf="repositories() && repositories()!.length === 0"
+            title="No repositories found"
+            message="This user does not have public repositories matching the current query."
+          ></app-empty-state>
+
+          <ul
+            *ngIf="repositories() && repositories()!.length > 0"
+            class="repo-items"
+          >
+            <li *ngFor="let repo of repositories()" class="repo-item card">
+              <div class="repo-item__left">
+                <a
+                  [href]="repo.repositoryUrl"
+                  target="_blank"
+                  rel="noopener"
+                  class="repo-link"
+                  >{{ repo.fullName }}</a
+                >
+                <p class="repo-desc" *ngIf="repo.description">
+                  {{ repo.description }}
+                </p>
+                <p class="repo-meta">
+                  <span *ngIf="repo.language">{{ repo.language }} · </span>
+                  ⭐ {{ repo.stars }} · Forks: {{ repo.forks }} · Issues:
+                  {{ repo.openIssues }}
+                </p>
+              </div>
+              <div class="repo-item__right">
+                <a
+                  [routerLink]="[
+                    '/repositories',
+                    repo.ownerUsername,
+                    repo.name,
+                  ]"
+                  >Details</a
+                >
+                <div class="repo-updated">
+                  Updated: {{ repo.updatedAt | date: "medium" }}
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </ng-container>
   </section>
 </div>
