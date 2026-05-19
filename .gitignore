@@ -5,3 +5,8 @@ dist/
 backend.zip
 coverage/
 *.zip
+
+.angular/
+frontend/.angular/
+frontend/dist/
+frontend/node_modules/

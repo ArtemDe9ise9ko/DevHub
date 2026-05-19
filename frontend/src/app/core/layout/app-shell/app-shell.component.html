@@ -6,7 +6,7 @@
       </div>
       <nav class="app-shell__nav">
         <ul class="app-shell__nav-list">
-          <li class="app-shell__nav-item">
+          <li class="app-shell__nav-item" *ngIf="isAuthenticated()">
             <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
           </li>
           <li class="app-shell__nav-item">
@@ -14,21 +14,37 @@
               >GitHub Search</a
             >
           </li>
-          <li class="app-shell__nav-item">
+          <li class="app-shell__nav-item" *ngIf="isAuthenticated()">
             <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
           </li>
-          <li class="app-shell__nav-item">
+          <li class="app-shell__nav-item" *ngIf="isAuthenticated()">
             <a routerLink="/favorites" routerLinkActive="active">Favorites</a>
           </li>
-          <li class="app-shell__nav-item">
+          <li class="app-shell__nav-item" *ngIf="isAuthenticated()">
             <a routerLink="/search-history" routerLinkActive="active"
               >Search History</a
             >
           </li>
-          <li class="app-shell__nav-item">
+          <li class="app-shell__nav-item" *ngIf="!isAuthenticated()">
             <a routerLink="/login" routerLinkActive="active">Login</a>
           </li>
+          <li class="app-shell__nav-item" *ngIf="!isAuthenticated()">
+            <a routerLink="/register" routerLinkActive="active">Register</a>
+          </li>
         </ul>
+
+        <div class="app-shell__auth-actions" *ngIf="isAuthenticated()">
+          <span class="app-shell__user-name">
+            {{ currentUser()?.email || "Account" }}
+          </span>
+          <button
+            class="app-shell__logout-button"
+            type="button"
+            (click)="logout()"
+          >
+            Logout
+          </button>
+        </div>
       </nav>
     </div>
   </header>

@@ -8,6 +8,8 @@ import { SearchHistoryPageComponent } from "@features/search-history/pages/searc
 import { AnalyticsPageComponent } from "@features/analytics/pages/analytics-page/analytics-page.component";
 import { LoginPageComponent } from "@features/auth/pages/login-page/login-page.component";
 import { RegisterPageComponent } from "@features/auth/pages/register-page/register-page.component";
+import { guestGuard } from "@core/auth/guards/guest.guard";
+import { authGuard } from "@core/auth/guards/auth.guard";
 
 /**
  * Application Routes
@@ -27,6 +29,7 @@ export const routes: Routes = [
       {
         path: "dashboard",
         component: DashboardPageComponent,
+        canActivate: [authGuard],
       },
       {
         path: "github-search",
@@ -39,22 +42,27 @@ export const routes: Routes = [
       {
         path: "favorites",
         component: FavoritesPageComponent,
+        canActivate: [authGuard],
       },
       {
         path: "search-history",
         component: SearchHistoryPageComponent,
+        canActivate: [authGuard],
       },
       {
         path: "analytics",
         component: AnalyticsPageComponent,
+        canActivate: [authGuard],
       },
       {
         path: "login",
         component: LoginPageComponent,
+        canActivate: [guestGuard],
       },
       {
         path: "register",
         component: RegisterPageComponent,
+        canActivate: [guestGuard],
       },
       {
         path: "**",

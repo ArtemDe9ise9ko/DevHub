@@ -5,6 +5,47 @@
   ></app-page-header>
 
   <section class="register-content">
-    <p>Register page will be implemented in the next iteration.</p>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+        />
+        <span class="form-error" *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">Email is required.</span>
+          <span *ngIf="email?.errors?.['email']">Enter a valid email.</span>
+        </span>
+      </div>
+
+      <div class="form-grid">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+        />
+        <span class="form-error" *ngIf="password?.invalid && password?.touched">
+          <span *ngIf="password?.errors?.['required']"
+            >Password is required.</span
+          >
+          <span *ngIf="password?.errors?.['minlength']">
+            Password must be at least 8 characters.
+          </span>
+        </span>
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid || isSubmitting()">
+        Create account
+      </button>
+
+      <p class="form-error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+      <p class="form-help">
+        Already have an account? <a routerLink="/login">Login</a>
+      </p>
+    </form>
   </section>
 </div>

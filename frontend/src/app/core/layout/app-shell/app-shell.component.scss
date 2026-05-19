@@ -62,6 +62,35 @@
   border-bottom-color: vars.$color-primary;
 }
 
+.app-shell__auth-actions {
+  display: flex;
+  align-items: center;
+  gap: vars.$spacing-md;
+  margin-left: auto;
+}
+
+.app-shell__user-name {
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.app-shell__logout-button {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: vars.$border-radius-md;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.app-shell__logout-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #fff;
+}
+
 .app-shell__main {
   flex: 1;
   padding: vars.$spacing-lg 0;
