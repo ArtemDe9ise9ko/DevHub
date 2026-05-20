@@ -46,6 +46,13 @@
             >
               View on GitHub →
             </a>
+            <button
+              class="btn-add-fav"
+              (click)="addFavoriteFromDetails()"
+              [disabled]="adding()"
+            >
+              {{ adding() ? "Saving..." : "Add to favorites" }}
+            </button>
           </div>
         </header>
 

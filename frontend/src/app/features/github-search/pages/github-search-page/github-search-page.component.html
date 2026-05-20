@@ -110,6 +110,16 @@
                   ]"
                   >Details</a
                 >
+                <button
+                  class="btn-add-fav"
+                  (click)="addFavorite(repo)"
+                  [disabled]="addingId(repo.id)"
+                >
+                  {{ addingId(repo.id) ? "Saving..." : "Add to favorites" }}
+                </button>
+                <div class="fav-message" *ngIf="favoriteMessage()">
+                  {{ favoriteMessage() }}
+                </div>
                 <div class="repo-updated">
                   Updated: {{ repo.updatedAt | date: "medium" }}
                 </div>

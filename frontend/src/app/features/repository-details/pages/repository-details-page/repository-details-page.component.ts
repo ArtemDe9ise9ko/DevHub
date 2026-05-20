@@ -9,6 +9,9 @@ import { EmptyStateComponent } from "@shared/components/empty-state/empty-state.
 import { RepositoryDetailsService } from "../../services/repository-details.service";
 import { RepositoryDetails } from "../../models/repository-details.model";
 import { RepositoryLanguagesResponse } from "../../models/repository-language.model";
+import { FavoritesService } from "@features/favorites/services/favorites.service";
+import { AuthService } from "@core/auth/services/auth.service";
+import { CreateFavoriteRepositoryRequest } from "@features/favorites/models/create-favorite-repository-request.model";
 
 /**
  * Repository Details Page
@@ -33,6 +36,7 @@ export class RepositoryDetailsPageComponent implements OnInit {
   readonly errorMessage = signal<string | null>(null);
   readonly repository = signal<RepositoryDetails | null>(null);
   readonly languages = signal<RepositoryLanguagesResponse | null>(null);
+  readonly adding = signal(false);
 
   private readonly owner = signal<string | null>(null);
   private readonly repo = signal<string | null>(null);
@@ -40,6 +44,8 @@ export class RepositoryDetailsPageComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly service: RepositoryDetailsService,
+    private readonly favorites: FavoritesService,
+    private readonly authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -55,6 +61,49 @@ export class RepositoryDetailsPageComponent implements OnInit {
       this.owner.set(owner);
       this.repo.set(repo);
       this.loadRepositoryDetails();
+    });
+  }
+
+  addFavoriteFromDetails(): void {
+    const repo = this.repository();
+    if (!repo) return;
+
+    if (!this.authService.isAuthenticated()) {
+      this.errorMessage.set("Sign in to save favorites.");
+      return;
+    }
+
+    if (this.adding()) return;
+    this.adding.set(true);
+
+    const req: CreateFavoriteRepositoryRequest = {
+      repositoryId: repo.id,
+      name: repo.name,
+      fullName: repo.fullName,
+      description: repo.description,
+      language: repo.language,
+      stars: repo.stars,
+      forks: repo.forks,
+      openIssues: repo.openIssues,
+      repositoryUrl: repo.repositoryUrl,
+      ownerUsername: repo.ownerUsername,
+      ownerAvatarUrl: repo.ownerAvatarUrl,
+    };
+
+    this.favorites.addFavorite(req).subscribe({
+      next: () => {
+        this.adding.set(false);
+      },
+      error: (err) => {
+        if (err?.status === 409) {
+          this.errorMessage.set("Repository is already in favorites.");
+        } else {
+          this.errorMessage.set(
+            "Unable to update favorites. Please try again.",
+          );
+        }
+        this.adding.set(false);
+      },
     });
   }
 

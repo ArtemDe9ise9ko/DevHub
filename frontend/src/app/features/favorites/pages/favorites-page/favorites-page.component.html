@@ -1,10 +1,63 @@
 <div class="favorites-page">
   <app-page-header
     title="Favorites"
-    description="Your favorite repositories."
+    description="Your saved repositories."
   ></app-page-header>
 
   <section class="favorites-content">
-    <p>Favorites page will be implemented in the next iteration.</p>
+    <app-loading-state
+      *ngIf="loading()"
+      message="Loading favorites..."
+    ></app-loading-state>
+
+    <div *ngIf="!loading()">
+      <app-empty-state
+        *ngIf="favorites() && favorites()!.length === 0"
+        title="No favorites yet"
+        message="Save repositories to view them here."
+      ></app-empty-state>
+
+      <div *ngIf="errorMessage()" class="error-block">
+        <p class="form-error">{{ errorMessage() }}</p>
+      </div>
+
+      <ul *ngIf="favorites() && favorites()!.length > 0" class="favorites-list">
+        <li *ngFor="let fav of favorites()" class="favorite-item card">
+          <div class="favorite-left">
+            <img
+              [src]="fav.ownerAvatarUrl"
+              [alt]="fav.ownerUsername"
+              class="fav-avatar"
+            />
+          </div>
+          <div class="favorite-body">
+            <a
+              [href]="fav.repositoryUrl"
+              target="_blank"
+              rel="noopener"
+              class="fav-link"
+              >{{ fav.fullName }}</a
+            >
+            <p class="fav-desc" *ngIf="fav.description">
+              {{ fav.description }}
+            </p>
+            <p class="fav-meta">
+              <span *ngIf="fav.language">{{ fav.language }} · </span>
+              ⭐ {{ fav.stars }} · Forks: {{ fav.forks }} · Issues:
+              {{ fav.openIssues }}
+            </p>
+          </div>
+          <div class="favorite-actions">
+            <a [routerLink]="['/repositories', fav.ownerUsername, fav.name]"
+              >Details</a
+            >
+            <button (click)="remove(fav.id)">Remove</button>
+            <div class="fav-created">
+              Saved: {{ fav.createdAt | date: "medium" }}
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </section>
 </div>

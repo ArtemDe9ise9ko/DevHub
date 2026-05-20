@@ -6,7 +6,45 @@
 }
 
 .favorites-content {
-  @include mixins.card;
-  padding: vars.$spacing-lg;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.favorites-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: vars.$spacing-md;
+}
+
+.favorite-item {
+  display: flex;
+  gap: vars.$spacing-md;
+  align-items: center;
+  padding: vars.$spacing-md;
+}
+
+.fav-avatar {
+  width: 56px;
+  height: 56px;
+}
+
+.favorite-body {
+  flex: 1;
+}
+
+.favorite-actions {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$spacing-sm;
+  align-items: flex-end;
+}
+
+.fav-link {
+  font-weight: 600;
+}
+.fav-created {
+  font-size: 0.875rem;
   color: vars.$color-text-muted;
 }
