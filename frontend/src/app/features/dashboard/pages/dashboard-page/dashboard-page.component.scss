@@ -2,7 +2,7 @@
 @use "mixins" as mixins;
 
 .dashboard-page {
-  padding: vars.$spacing-lg;
+  padding: 0 vars.$spacing-lg;
 }
 
 .dashboard-content {
