@@ -156,8 +156,8 @@ Frontend will be available at `http://localhost:4200` (default ng serve port).
 - `/favorites` — Saved favorite repositories
 - `/search-history` — User search history
 - `/analytics` — GitHub analytics
-- `/login` — User login (placeholder)
-- `/register` — User registration (placeholder)
+- `/login` — User login
+- `/register` — User registration
 
 ### Frontend Configuration
 

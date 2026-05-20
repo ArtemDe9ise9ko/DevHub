@@ -8,7 +8,7 @@ import type { User } from "@core/auth/models/user.model";
 
 /**
  * Dashboard Page
- * Main dashboard view placeholder
+ * Main dashboard view for DevHub overview
  */
 
 @Component({
