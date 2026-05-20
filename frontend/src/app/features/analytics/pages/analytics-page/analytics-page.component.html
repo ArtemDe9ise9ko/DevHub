@@ -1,10 +1,108 @@
 <div class="analytics-page">
   <app-page-header
     title="Analytics"
-    description="GitHub repository analytics and insights."
+    description="User analytics and language distribution."
   ></app-page-header>
 
   <section class="analytics-content">
-    <p>Analytics page will be implemented in the next iteration.</p>
+    <form class="analytics-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <input
+        type="text"
+        formControlName="username"
+        placeholder="GitHub username"
+      />
+      <button type="submit" [disabled]="form.invalid || loading()">
+        {{ loading() ? "Loading..." : "Search" }}
+      </button>
+    </form>
+
+    <app-loading-state
+      *ngIf="loading()"
+      message="Loading analytics..."
+    ></app-loading-state>
+
+    <div *ngIf="!loading()">
+      <app-empty-state
+        *ngIf="!summary() && !errorMessage()"
+        title="Start analytics"
+        message="Enter a GitHub username to view analytics."
+      ></app-empty-state>
+
+      <div *ngIf="errorMessage()" class="error-block">
+        <p class="form-error">{{ errorMessage() }}</p>
+      </div>
+
+      <div *ngIf="summary()" class="summary-section card">
+        <div class="summary-header">
+          <img
+            *ngIf="summary()!.avatarUrl"
+            [src]="summary()!.avatarUrl"
+            [alt]="summary()!.username"
+            class="summary-avatar"
+          />
+          <div>
+            <h3>{{ summary()!.username }}</h3>
+            <p class="summary-sub">Aggregated GitHub statistics</p>
+          </div>
+        </div>
+
+        <ul class="summary-cards">
+          <li class="card-item">
+            Repos<br /><strong>{{ summary()!.totalRepositories }}</strong>
+          </li>
+          <li class="card-item">
+            Stars<br /><strong>{{ summary()!.totalStars }}</strong>
+          </li>
+          <li class="card-item">
+            Forks<br /><strong>{{ summary()!.totalForks }}</strong>
+          </li>
+          <li class="card-item">
+            Open Issues<br /><strong>{{ summary()!.totalOpenIssues }}</strong>
+          </li>
+        </ul>
+
+        <ng-container *ngIf="summary() as s">
+          <ng-container *ngIf="s.topRepositories as topRepos">
+            <div *ngIf="topRepos.length > 0" class="top-repos">
+              <h4>Top repositories</h4>
+              <ul>
+                <li *ngFor="let r of topRepos" class="top-repo card">
+                  <a [href]="r.repositoryUrl" target="_blank" rel="noopener">{{
+                    r.fullName
+                  }}</a>
+                  <div class="repo-meta">
+                    ⭐ {{ r.stars }} · Forks: {{ r.forks }} · Issues:
+                    {{ r.openIssues }}
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <div
+        *ngIf="languages() && languages()!.items.length > 0"
+        class="languages-section card"
+      >
+        <h3>Language distribution</h3>
+        <ul class="languages-list">
+          <li *ngFor="let lang of languages()!.items" class="language-item">
+            <div class="language-row">
+              <div class="language-name">{{ lang.language }}</div>
+              <div class="language-percentage">
+                {{ lang.percentage ?? 0 | number: "1.0-1" }}%
+              </div>
+            </div>
+            <div class="language-bar">
+              <div
+                class="language-fill"
+                [style.width.%]="lang.percentage ?? 0"
+              ></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </section>
 </div>

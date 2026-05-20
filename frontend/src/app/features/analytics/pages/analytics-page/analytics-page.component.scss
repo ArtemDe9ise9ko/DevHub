@@ -3,6 +3,63 @@
 
 .analytics-page {
   padding: vars.$spacing-lg;
+
+  .analytics-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    input {
+      flex: 1 1 auto;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      background: vars.$color-primary;
+      color: vars.$color-surface;
+      border-radius: 4px;
+    }
+  }
+
+  .summary-section {
+    .summary-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      .summary-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 4px;
+      }
+    }
+
+    .summary-cards {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .top-repos {
+      margin-top: 12px;
+    }
+  }
+
+  .languages-section {
+    margin-top: 12px;
+  }
+  .language-bar {
+    background: #eee;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .language-fill {
+    background: vars.$color-primary;
+    height: 100%;
+  }
 }
 
 .analytics-content {
