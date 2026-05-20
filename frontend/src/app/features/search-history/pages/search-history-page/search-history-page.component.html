@@ -5,6 +5,49 @@
   ></app-page-header>
 
   <section class="history-content">
-    <p>Search history page will be implemented in the next iteration.</p>
+    <app-loading-state
+      *ngIf="loading()"
+      message="Loading search history..."
+    ></app-loading-state>
+
+    <div *ngIf="!loading()">
+      <app-empty-state
+        *ngIf="history() && history()!.length === 0"
+        title="No recent searches"
+        message="Your recent searches will appear here."
+      ></app-empty-state>
+
+      <div *ngIf="errorMessage()" class="error-block">
+        <p class="form-error">{{ errorMessage() }}</p>
+      </div>
+
+      <div *ngIf="history() && history()!.length > 0">
+        <ul class="history-list">
+          <li *ngFor="let item of history()" class="history-item card">
+            <div class="history-left">
+              <div class="history-query">{{ item.query }}</div>
+              <div class="history-type">{{ item.type }}</div>
+            </div>
+            <div class="history-right">
+              <div class="history-date">
+                {{ item.createdAt | date: "medium" }}
+              </div>
+              <a
+                *ngIf="item.type === 'USER'"
+                [routerLink]="['/github-search']"
+                [queryParams]="{ username: item.query }"
+                >Search</a
+              >
+            </div>
+          </li>
+        </ul>
+
+        <div class="history-actions">
+          <button (click)="clear()" [disabled]="clearing()">
+            {{ clearing() ? "Clearing..." : "Clear History" }}
+          </button>
+        </div>
+      </div>
+    </div>
   </section>
 </div>

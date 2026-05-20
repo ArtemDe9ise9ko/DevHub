@@ -15,6 +15,8 @@ import { GitHubRepositoryQuery } from "../../models/github-repository-query.mode
 import { FavoritesService } from "@features/favorites/services/favorites.service";
 import { AuthService } from "@core/auth/services/auth.service";
 import { CreateFavoriteRepositoryRequest } from "@features/favorites/models/create-favorite-repository-request.model";
+import { SearchHistoryService } from "@features/search-history/services/search-history.service";
+import { CreateSearchHistoryRequest } from "@features/search-history/models/create-search-history-request.model";
 
 /**
  * GitHub Search Page
@@ -60,6 +62,7 @@ export class GitHubSearchPageComponent {
     private readonly service: GitHubSearchService,
     private readonly favorites: FavoritesService,
     private readonly authService: AuthService,
+    private readonly searchHistory: SearchHistoryService,
   ) {}
 
   get username() {
@@ -141,6 +144,19 @@ export class GitHubSearchPageComponent {
         this.user.set(user);
         this.repositories.set(repos);
         this.loading.set(false);
+        // Save search history for authenticated users (non-blocking)
+        if (this.authService.isAuthenticated()) {
+          const req: CreateSearchHistoryRequest = {
+            query: username,
+            type: "USER",
+          };
+          this.searchHistory.addHistory(req).subscribe({
+            next: () => {},
+            error: () => {
+              /* ignore history save errors */
+            },
+          });
+        }
       },
       error: (err) => {
         this.loading.set(false);
