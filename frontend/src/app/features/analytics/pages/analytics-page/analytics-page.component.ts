@@ -57,11 +57,7 @@ export class AnalyticsPageComponent {
     this.summary.set(null);
     this.languages.set(null);
 
-    const summary$ = this.service.getUserSummary(username).pipe(
-      catchError((err) => {
-        throw err;
-      }),
-    );
+    const summary$ = this.service.getUserSummary(username);
     const languages$ = this.service
       .getUserLanguages(username)
       .pipe(catchError(() => of({ items: [] } as AnalyticsLanguagesResponse)));

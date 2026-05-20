@@ -27,6 +27,11 @@
         title="Start analytics"
         message="Enter a GitHub username to view analytics."
       ></app-empty-state>
+      <app-empty-state
+        *ngIf="summary() && languages() && languages()!.items.length === 0"
+        title="No language data"
+        message="No language distribution data was returned for this user."
+      ></app-empty-state>
 
       <div *ngIf="errorMessage()" class="error-block">
         <p class="form-error">{{ errorMessage() }}</p>
